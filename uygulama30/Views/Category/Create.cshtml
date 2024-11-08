@@ -1,0 +1,21 @@
+﻿@model uygulama30.Models.Category
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Create</h1>
+
+<form asp-action="Create" asp-controller="Category" method="post">
+  <div class="form-group row">
+    <label for="text" class="col-4 col-form-label">Kategori İsmi</label> 
+    <div class="col-8">
+      <input id="text" asp-for="CategoryName" placeholder="Kategori İsmin Girin" type="text" class="form-control">
+    </div>
+  </div> 
+  <div class="form-group row">
+    <div class="offset-4 col-8">
+      <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+</form>
