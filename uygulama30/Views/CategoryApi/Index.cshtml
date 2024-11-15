@@ -1,0 +1,61 @@
+﻿@model List<uygulama30.Models.Category>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1>Index</h1>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <a asp-action="Create" asp-controller="Category" class="btn btn-primary">Yeni</a>
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Sıra no</th>
+                        <th>Kategori Adı</th>
+                        <th>Düzeltme</th>
+                        <th>Silme</th>
+
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>Sıra no</th>
+                        <th>Kategori Adı</th>
+                        <th>Düzeltme</th>
+                        <th>Silme</th>
+
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @{
+                        int sayi = 1;
+                    }
+                    @foreach (var item in Model)
+                    {
+
+                        <tr>
+                            <td>@sayi</td>
+                            <td>@item.CategoryName</td>
+                            <td><a asp-action="Edit" asp-controller="Category" asp-route-id="@item.CategoryId" class="btn btn-danger">Düzeltme</a></td>
+                            <td><a asp-action="Delete" asp-controller="Category" asp-route-id="@item.CategoryId" class="btn btn-warning">Silme</a></td>
+
+                        </tr>
+                        sayi++;
+                    }
+
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
