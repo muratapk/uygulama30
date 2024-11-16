@@ -68,14 +68,14 @@ namespace uygulama30.Controllers
                     {
                         var extension=Path.GetExtension(Picture.FileName);//uzanti yeni.jpg buradaki jpg
                         var name=Path.GetFileName(Picture.FileName);//dosyanın adını yeni
-                        
-                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ProductImages", name);
+                        string yeni = Guid.NewGuid().ToString() + extension;
+                        var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ProductImages/", yeni);
                         using (var stream = new FileStream(filePath, FileMode.Create))
                         {
                             Picture.CopyTo(stream);
                         }
-                        productImage.FilePath= name;
-                        productImage.FileName= name;
+                        productImage.FilePath= yeni;
+                        productImage.FileName= yeni;
                     }
                 }
 
@@ -110,17 +110,33 @@ namespace uygulama30.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductId,FileName,FilePath,CreatedAt")] ProductImage productImage)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductId,FileName,FilePath,CreatedAt")] ProductImage productImage,IFormFile Picture)
         {
             if (id != productImage.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
+           
                 try
                 {
+                    if (Picture != null)
+                    {
+                        if (Picture.Length > 0)
+                        {
+                            
+                            var extension = Path.GetExtension(Picture.FileName);//uzanti yeni.jpg buradaki jpg
+                            var name = Path.GetFileName(Picture.FileName);//dosyanın adını yeni
+                            string yeni = Guid.NewGuid().ToString() + extension;
+                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/ProductImages/", yeni);
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                Picture.CopyTo(stream);
+                            }
+                            productImage.FilePath = yeni;
+                            productImage.FileName = yeni;
+                        }
+                    }
                     _context.Update(productImage);
                     await _context.SaveChangesAsync();
                 }
@@ -136,7 +152,7 @@ namespace uygulama30.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
+            
             ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", productImage.ProductId);
             return View(productImage);
         }

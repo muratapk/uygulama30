@@ -29,6 +29,7 @@ namespace uygulama30.Models
         virtual public Category? Category { get; set; }
         [Display(Name = "Stok Miktarı")]
 
+        public string ProductPicture { get; set; } = String.Empty;
         public int? StockQuantity { get; set; } // Stok miktarı
         [Display(Name = "Oluşturma Tarihi")]
 
@@ -36,6 +37,8 @@ namespace uygulama30.Models
         [DataType(DataType.Date)]
         public DateTime? CreatedAt { get; set; } // Ürünün oluşturulma tarihi
       
-        virtual public List<ProductImage>? ProductImages { get; set; }   
+        virtual public List<ProductImage>? ProductImages { get; set; }
+        [NotMapped]
+        virtual public IFormFile? Picture { get; set; }
     }
 }

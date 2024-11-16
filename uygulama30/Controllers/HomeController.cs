@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using uygulama30.Context;
 using uygulama30.Models;
 
 namespace uygulama30.Controllers
@@ -7,10 +8,16 @@ namespace uygulama30.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext _context;
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context=context;
+        }
+
+        public IActionResult ProductDetails(int id)
+        {
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
+            return View(product);
         }
 
         public IActionResult Index()

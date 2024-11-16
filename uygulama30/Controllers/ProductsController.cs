@@ -57,11 +57,29 @@ namespace uygulama30.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Price,Description,CategoryId,StockQuantity,CreatedAt")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,Name,Price,Description,CategoryId,StockQuantity,CreatedAt")] Product product,IFormFile picture)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
+                if (picture != null)
+                {
+                    if (picture.Length <= MaxFileSize)
+                    {
+
+                        var uzanti = Path.GetExtension(picture.FileName);
+                        //bocek.png  .png domates.jpg  .jpg
+                        string yeniisim = Guid.NewGuid().ToString() + uzanti;
+
+                        string yol = Path.Combine(Directory.GetCurrentDirectory() + "/wwwroot/ProductImages/" + yeniisim);
+                        using (var stream = new FileStream(yol, FileMode.Create))
+                        {
+                            picture.CopyToAsync(stream);
+                        }
+                        product.ProductPicture = yeniisim;
+                    }
+                }
+
+                    _context.Add(product);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -85,23 +103,41 @@ namespace uygulama30.Controllers
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryName", product.CategoryId);
             return View(product);
         }
-
+        private const long MaxFileSize = 5 * 1024 * 1024; // 5 MB
         // POST: Products/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Description,CategoryId,StockQuantity,CreatedAt")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Description,CategoryId,StockQuantity,CreatedAt")] Product product,IFormFile picture)
         {
             if (id != product.Id)
             {
                 return NotFound();
             }
-
+           
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (picture != null)
+                    {
+                        if (picture.Length <= MaxFileSize)
+                        {
+
+                            var uzanti = Path.GetExtension(picture.FileName);
+                            //bocek.png  .png domates.jpg  .jpg
+                            string yeniisim = Guid.NewGuid().ToString() + uzanti;
+
+                            string yol = Path.Combine(Directory.GetCurrentDirectory() + "/wwwroot/ProductImages/" + yeniisim);
+                            using (var stream = new FileStream(yol, FileMode.Create))
+                            {
+                                picture.CopyToAsync(stream);
+                            }
+                            product.ProductPicture = yeniisim;
+                        }
+                    }
+
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
@@ -130,9 +166,12 @@ namespace uygulama30.Controllers
                 return NotFound();
             }
 
+
             var product = await _context.Products
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+           
             if (product == null)
             {
                 return NotFound();
@@ -147,8 +186,13 @@ namespace uygulama30.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
+            
             if (product != null)
             {
+                if(System.IO.File.Exists("/ProductImages/"+product.ProductPicture))
+                {
+                    System.IO.File.Delete("/ProductImages/" + product.ProductPicture);
+                }
                 _context.Products.Remove(product);
             }
 

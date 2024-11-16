@@ -26,6 +26,9 @@
                 @Html.DisplayNameFor(model => model.Category)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.ProductPicture)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.StockQuantity)
             </th>
             <th>
@@ -49,6 +52,21 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Category.CategoryName)
             </td>
+                <td>
+                   
+                    @{
+                        string resim ;
+                        if(item.ProductPicture==null || item.ProductPicture==string.Empty)
+                        {
+                            resim = "resimyok.png";
+                        }
+                        else
+                        {
+                            resim = item.ProductPicture;
+                        }
+                    }
+                    <img src="/ProductImages/@resim" height="50px" width="50px"/>
+                </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StockQuantity)
             </td>
