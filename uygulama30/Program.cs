@@ -10,6 +10,15 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddSession(
+    options =>
+    {
+        options.IOTimeout = TimeSpan.FromSeconds(10);
+        options.Cookie.IsEssential = true;
+        options.Cookie.HttpOnly = true;
+    }
+    
+    );
 
 var app = builder.Build();
 
@@ -23,7 +32,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();

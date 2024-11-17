@@ -50,10 +50,7 @@
                                 <a href="#" class="dropdown-item">Register</a>
                             </div>
                         </div>
-                        <div class="cart">
-                            <i class="fa fa-cart-plus"></i>
-                            <span>(0)</span>
-                        </div>
+                       @await Component.InvokeAsync("CartSumList")
                     </div>
                 </div>
             </div>
